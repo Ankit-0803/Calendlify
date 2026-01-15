@@ -58,8 +58,7 @@ const eventTypeValidation = {
 const bookingValidation = {
     create: [
         body('eventTypeId')
-            .notEmpty().withMessage('Event type ID is required')
-            .isUUID().withMessage('Event type ID must be a valid UUID'),
+            .notEmpty().withMessage('Event type ID is required'),
         body('startTime')
             .notEmpty().withMessage('Start time is required')
             .isISO8601().withMessage('Start time must be a valid ISO 8601 date'),
