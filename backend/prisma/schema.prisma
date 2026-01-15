@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Default user for the application (no auth required)
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  timezone  String   @default("Asia/Kolkata")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  eventTypes     EventType[]
+  availabilities Availability[]
+
+  @@map("users")
+}
+
+// Event types (e.g., "30 Minute Meeting", "Quick Call")
+model EventType {
+  id              String   @id @default(uuid())
+  userId          String   @map("user_id")
+  name            String
+  slug            String   @unique
+  durationMinutes Int      @map("duration_minutes")
+  description     String?
+  color           String   @default("#0069ff")
+  isActive        Boolean  @default(true) @map("is_active")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+
+  @@map("event_types")
+}
+
+// Availability schedule (e.g., "Working Hours", "Weekend Schedule")
+model Availability {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  name      String
+  isDefault Boolean  @default(false) @map("is_default")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rules     AvailabilityRule[]
+  overrides DateOverride[]
+
+  @@map("availabilities")
+}
+
+// Weekly availability rules (e.g., Monday 9:00-17:00)
+model AvailabilityRule {
+  id             String @id @default(uuid())
+  availabilityId String @map("availability_id")
+  dayOfWeek      Int    @map("day_of_week") // 0 = Sunday, 1 = Monday, etc.
+  startTime      String @map("start_time") // Format: "HH:mm"
+  endTime        String @map("end_time") // Format: "HH:mm"
+
+  availability Availability @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
+
+  @@map("availability_rules")
+}
+
+// Date-specific overrides (e.g., vacation days, special hours)
+model DateOverride {
+  id             String   @id @default(uuid())
+  availabilityId String   @map("availability_id")
+  date           DateTime @db.Date
+  startTime      String?  @map("start_time") // null if unavailable
+  endTime        String?  @map("end_time") // null if unavailable
+  isUnavailable  Boolean  @default(false) @map("is_unavailable")
+
+  availability Availability @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
+
+  @@map("date_overrides")
+}
+
+// Bookings made by invitees
+model Booking {
+  id           String   @id @default(uuid())
+  eventTypeId  String   @map("event_type_id")
+  inviteeName  String   @map("invitee_name")
+  inviteeEmail String   @map("invitee_email")
+  startTime    DateTime @map("start_time")
+  endTime      DateTime @map("end_time")
+  status       String   @default("confirmed") // confirmed, cancelled, rescheduled
+  meetingNotes String?  @map("meeting_notes")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  eventType EventType @relation(fields: [eventTypeId], references: [id], onDelete: Cascade)
+
+  @@map("bookings")
+}
