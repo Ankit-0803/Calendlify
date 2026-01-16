@@ -18,15 +18,44 @@ It allows users to create event types, manage availability, and let others book 
 
 ---
 
-## 🚀 Features
+  
+  https://calendlify.onrender.com/
 
-- Create and manage event types (15 min, 30 min, etc.)
-- Weekly availability with date-specific overrides
-- Public booking page using event slug
-- Real-time available slot calculation
-- View upcoming and past meetings
-- Cancel and reschedule meetings
-- Time-zone aware scheduling
+---
+
+## Core Features
+
+### 1. Event Types Management
+- Create event types with name, duration (in minutes), and unique URL slug
+- Edit and delete existing event types
+- List all event types on the scheduling page
+- Each event type has a unique public booking link
+
+### 2. Availability Settings
+- Configure available days of the week (e.g., Monday to Friday)
+- Set available time slots per day (e.g., 9:00 AM – 5:00 PM)
+- Timezone-aware availability configuration
+
+### 3. Public Booking Page
+- Month calendar view for date selection
+- Display available time slots for selected date
+- Booking form to collect invitee name and email
+- Prevent double booking of the same time slot
+- Booking confirmation page with meeting details
+
+### 4. Meetings Page
+- View upcoming meetings
+- View past meetings
+- Cancel meetings
+
+---
+
+## 🌟 Bonus Features Implemented
+
+- Responsive design (mobile, tablet, desktop)
+- Multiple availability schedules
+- Date-specific hours (override availability for specific dates)
+- Custom invitee questions on booking form
 
 ---
 
