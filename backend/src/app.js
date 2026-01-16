@@ -13,7 +13,7 @@ const meetingRoutes = require('./routes/meetingRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5020;
 
 // Middleware
 app.use(cors({
