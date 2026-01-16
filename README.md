@@ -1,99 +1,145 @@
-# 🗓️ Calendlify - Scheduling Made Simple
+# 🗓️ Calendlify – Scheduling Made Simple
 
-<div align="center">
-
-[![Demo Video](https://img.shields.io/badge/🎥_Watch-Demo_Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white)]([[YOUR_DEMO_VIDEO_LINK_HERE](https://docs.google.com/videos/d/1vqmOH-kCrOXktdxyIezEyoCrfwD4DhPVEvBMmaLM_gY/edit?usp=sharing)](https://docs.google.com/videos/d/1vqmOH-kCrOXktdxyIezEyoCrfwD4DhPVEvBMmaLM_gY/edit?usp=sharing))
-[![Vercel App](https://img.shields.io/badge/🚀_Frontend-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)]([[https://your-app.vercel.app/](https://calendlify.vercel.app/)](https://calendlify.vercel.app/))
-[![Render API](https://img.shields.io/badge/⚙️_Backend-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)]([https://calendlify.onrender.com](https://calendlify.onrender.com/))
-
-</div>
+Calendlify is a full-stack scheduling application inspired by Calendly.  
+It allows users to create event types, manage availability, and let others book meetings through a shared link.
 
 ---
 
-## 🚀 Overview
+## 🔗 Live Links
 
-**Calendlify** is a full-stack scheduling platform clone (inspired by Calendly) that streamlines meeting coordination. It allows users to create event types, set availability rules, and share booking links with invitees. Built with a modern tech stack, it features real-time scheduling, intuitive dashboards, and seamless time zone management.
+- 🎥 **Video Demo**  
+  https://docs.google.com/videos/d/1vqmOH-kCrOXktdxyIezEyoCrfwD4DhPVEvBMmaLM_gY/edit?usp=sharing
 
-## ✨ Key Features
+- 🌐 **Frontend (Vercel)**  
+  https://calendlify.vercel.app/
 
-- **Event Type Management**: Create and customize different meeting types (15min, 30min, etc.) with specific locations (Zoom, Phone, In-person).
-- **Advanced Availability**: 
-  - Set weekly recurring schedules.
-  - Define date-specific overrides.
-  - Configure scheduling windows (e.g., 60 days in advance).
-  - Time zone intelligence for global coordination.
-- **Booking Flow**:
-  - Slick public booking pages.
-  - Real-time slot calculation based on availability.
-  - Instant booking confirmation.
-- **Dashboard**:
-  - Overview of scheduled meetings.
-  - Filter meetings by status (Upcoming, Past, Canceled).
-  - Quick access to copy booking links.
+- ⚙️ **Backend API (Render)**  
+  https://calendlify.onrender.com/
+
+---
+
+## 🚀 Features
+
+- Create and manage event types (15 min, 30 min, etc.)
+- Weekly availability with date-specific overrides
+- Public booking page using event slug
+- Real-time available slot calculation
+- View upcoming and past meetings
+- Cancel and reschedule meetings
+- Time-zone aware scheduling
+
+---
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **Framework**: React.js (Vite)
-- **Styling**: Tailwind CSS, Lucide React (Icons)
-- **Routing**: React Router v7
-- **HTTP Client**: Axios
-- **Deploy**: Vercel
+- React.js (Vite)
+- Tailwind CSS
+- React Router
+- Axios
+- Deployed on Vercel
 
 ### Backend
-- **Environment**: Node.js
-- **Framework**: Express.js
-- **Database**: PostgreSQL (via Neon DB)
-- **ORM**: Prisma
-- **Deploy**: Render
-
-## 🏁 Getting Started Locally
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Ankit-0803/Calendlify.git
-   cd Calendlify
-   ```
-
-2. **Setup Backend**
-   ```bash
-   cd backend
-   npm install
-   
-   # Create .env file with your credentials
-   # DATABASE_URL=...
-   # PORT=5030
-   
-   npx prisma generate
-   npm run dev
-   ```
-
-3. **Setup Frontend**
-   ```bash
-   cd frontend
-   npm install
-   
-   # Create .env.development
-   # VITE_API_URL=http://localhost:5030/api
-   
-   npm run dev
-   ```
-
-## 📦 Deployment
-
-### Backend (Render)
-The backend is deployed on Render as a Web Service.
-- **URL**: `https://calendlify.onrender.com`
-- **Build Command**: `npm install && npx prisma generate`
-- **Start Command**: `npm start`
-
-### Frontend (Vercel)
-The frontend is deployed on Vercel.
-- **URL**: `https://your-app.vercel.app`
-- **Environment Variable**: `VITE_API_URL` set to the Render Backend API URL.
+- Node.js
+- Express.js
+- PostgreSQL (Neon DB)
+- Prisma ORM
+- express-validator
+- date-fns
+- Deployed on Render
 
 ---
 
-<div align="center">
-  <sub>Built by Ankit Kushwaha</sub>
-</div>
+## 🧩 Backend API Endpoints
+
+### Event Types
+| Method | Endpoint | Description |
+|------|---------|------------|
+| GET | `/api/event-types` | List all event types |
+| GET | `/api/event-types/:id` | Get event type by ID |
+| GET | `/api/event-types/slug/:slug` | Get event type by slug |
+| POST | `/api/event-types` | Create event type |
+| PUT | `/api/event-types/:id` | Update event type |
+| DELETE | `/api/event-types/:id` | Delete event type |
+
+### Availability
+| Method | Endpoint | Description |
+|------|---------|------------|
+| GET | `/api/availability` | Get all schedules |
+| GET | `/api/availability/default` | Get default availability |
+| POST | `/api/availability` | Create schedule |
+| PUT | `/api/availability/:id` | Update schedule |
+| POST | `/api/availability/:id/overrides` | Add date override |
+
+### Bookings
+| Method | Endpoint | Description |
+|------|---------|------------|
+| GET | `/api/bookings/slots/:slug/:date` | Get available slots |
+| POST | `/api/bookings` | Create booking |
+| GET | `/api/bookings/:id` | Get booking details |
+| PUT | `/api/bookings/:id/cancel` | Cancel booking |
+| PUT | `/api/bookings/:id/reschedule` | Reschedule booking |
+
+### Meetings
+| Method | Endpoint | Description |
+|------|---------|------------|
+| GET | `/api/meetings?filter=upcoming` | Get upcoming meetings |
+| GET | `/api/meetings?filter=past` | Get past meetings |
+| GET | `/api/meetings/counts` | Get meeting counts |
+| PUT | `/api/meetings/:id/cancel` | Cancel meeting |
+
+---
+
+## 🗄️ Database Schema (High Level)
+
+- `users`
+- `event_types`
+- `availabilities`
+- `availability_rules`
+- `date_overrides`
+- `bookings`
+
+---
+
+## Setup Instructions
+
+### 1. Install Dependencies
+
+```bash
+cd backend
+npm install
+```
+
+### 2. Configure Environment Variables
+
+Update `.env` file with your Neon PostgreSQL connection string:
+
+```env
+DATABASE_URL="postgresql://username:password@host/database?sslmode=require"
+PORT=5000
+NODE_ENV=development
+FRONTEND_URL=http://localhost:3000
+```
+
+### 3. Setup Database
+
+```bash
+# Generate Prisma client
+npm run db:generate
+
+# Push schema to database
+npm run db:push
+
+# Seed sample data
+npm run db:seed
+```
+
+### 4. Start the Server
+
+```bash
+# Development mode (with hot reload)
+npm run dev
+
+# Production mode
+npm start
+```
