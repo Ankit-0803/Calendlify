@@ -1,12 +1,58 @@
 import React, { useState } from 'react';
-import { X, Clock, Video, MapPin, Phone, Check, ChevronDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { X, Clock, Video, MapPin, Phone, Check, ChevronDown, ChevronUp } from 'lucide-react';
 
 const CreateEventDrawer = ({ isOpen, onClose, onCreate }) => {
+    const navigate = useNavigate();
     const [title, setTitle] = useState('New Meeting');
-    const [duration, setDuration] = useState('30');
+    const [duration, setDuration] = useState(30);
     const [location, setLocation] = useState('zoom');
 
+    // Dropdown states
+    const [showDurationDropdown, setShowDurationDropdown] = useState(false);
+    const [showAvailabilityDropdown, setShowAvailabilityDropdown] = useState(false);
+    const [showHostDropdown, setShowHostDropdown] = useState(false);
+
+    // Availability options
+    const [selectedAvailability, setSelectedAvailability] = useState({
+        label: 'Weekdays, hours vary',
+        extra: '+1 date-specific time'
+    });
+
+    // Host options
+    const [selectedHost, setSelectedHost] = useState({
+        name: 'Ankit Kushwaha',
+        email: 'you',
+        initial: 'A'
+    });
+
+    const durationOptions = [15, 30, 45, 60];
+
+    const availabilityOptions = [
+        { label: 'Weekdays, hours vary', extra: '+1 date-specific time' },
+        { label: 'Working hours', extra: '9am - 5pm' },
+        { label: 'Custom schedule', extra: 'Set your own' },
+    ];
+
+    const hostOptions = [
+        { name: 'Ankit Kushwaha', email: 'you', initial: 'A' },
+    ];
+
     if (!isOpen) return null;
+
+    const handleCreate = () => {
+        // Navigate to preview page with event data
+        const eventData = {
+            name: title,
+            duration,
+            location,
+            availability: selectedAvailability,
+            host: selectedHost,
+        };
+
+        onClose();
+        navigate('/event-types/preview', { state: { eventData } });
+    };
 
     return (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/20" onClick={onClose}>
@@ -38,14 +84,46 @@ const CreateEventDrawer = ({ isOpen, onClose, onCreate }) => {
                 <div className="flex-1 overflow-y-auto">
                     {/* Duration */}
                     <div className="p-6 border-b border-gray-100">
-                        <div className="flex items-center justify-between mb-4 cursor-pointer group">
+                        <div
+                            className="flex items-center justify-between mb-4 cursor-pointer group"
+                            onClick={() => setShowDurationDropdown(!showDurationDropdown)}
+                        >
                             <h3 className="font-bold text-gray-900">Duration</h3>
-                            <ChevronDown size={16} className="text-gray-400" />
+                            {showDurationDropdown ? (
+                                <ChevronUp size={16} className="text-gray-400" />
+                            ) : (
+                                <ChevronDown size={16} className="text-gray-400" />
+                            )}
                         </div>
-                        <div className="flex items-center gap-2 text-gray-600 text-sm">
-                            <Clock size={16} />
-                            <span>30 min</span>
-                        </div>
+
+                        {showDurationDropdown ? (
+                            <div className="space-y-2">
+                                {durationOptions.map((opt) => (
+                                    <button
+                                        key={opt}
+                                        onClick={() => {
+                                            setDuration(opt);
+                                            setShowDurationDropdown(false);
+                                        }}
+                                        className={`w-full flex items-center justify-between p-3 rounded-lg border transition-all ${duration === opt
+                                                ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                                : 'border-gray-200 hover:border-gray-300 text-gray-600'
+                                            }`}
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <Clock size={16} />
+                                            <span>{opt} min</span>
+                                        </div>
+                                        {duration === opt && <Check size={16} className="text-blue-600" />}
+                                    </button>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="flex items-center gap-2 text-gray-600 text-sm">
+                                <Clock size={16} />
+                                <span>{duration} min</span>
+                            </div>
+                        )}
                     </div>
 
                     {/* Location */}
@@ -56,15 +134,33 @@ const CreateEventDrawer = ({ isOpen, onClose, onCreate }) => {
                         </div>
 
                         <div className="grid grid-cols-4 gap-2">
-                            <button className={`flex flex-col items-center justify-center p-3 rounded border ${location === 'zoom' ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-200 hover:border-gray-300 text-gray-600'} transition-all`}>
+                            <button
+                                onClick={() => setLocation('zoom')}
+                                className={`flex flex-col items-center justify-center p-3 rounded border ${location === 'zoom'
+                                        ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                        : 'border-gray-200 hover:border-gray-300 text-gray-600'
+                                    } transition-all`}
+                            >
                                 <Video size={20} className="mb-1" />
                                 <span className="text-xs">Zoom</span>
                             </button>
-                            <button className="flex flex-col items-center justify-center p-3 rounded border border-gray-200 hover:border-gray-300 text-gray-600 transition-all">
+                            <button
+                                onClick={() => setLocation('phone')}
+                                className={`flex flex-col items-center justify-center p-3 rounded border ${location === 'phone'
+                                        ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                        : 'border-gray-200 hover:border-gray-300 text-gray-600'
+                                    } transition-all`}
+                            >
                                 <Phone size={20} className="mb-1" />
                                 <span className="text-xs">Phone</span>
                             </button>
-                            <button className="flex flex-col items-center justify-center p-3 rounded border border-gray-200 hover:border-gray-300 text-gray-600 transition-all">
+                            <button
+                                onClick={() => setLocation('in-person')}
+                                className={`flex flex-col items-center justify-center p-3 rounded border ${location === 'in-person'
+                                        ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                        : 'border-gray-200 hover:border-gray-300 text-gray-600'
+                                    } transition-all`}
+                            >
                                 <MapPin size={20} className="mb-1" />
                                 <span className="text-xs">In-person</span>
                             </button>
@@ -77,28 +173,102 @@ const CreateEventDrawer = ({ isOpen, onClose, onCreate }) => {
 
                     {/* Availability */}
                     <div className="p-6 border-b border-gray-100">
-                        <div className="flex items-center justify-between mb-4 cursor-pointer group">
+                        <div
+                            className="flex items-center justify-between mb-4 cursor-pointer group"
+                            onClick={() => setShowAvailabilityDropdown(!showAvailabilityDropdown)}
+                        >
                             <h3 className="font-bold text-gray-900">Availability</h3>
-                            <ChevronDown size={16} className="text-gray-400" />
+                            {showAvailabilityDropdown ? (
+                                <ChevronUp size={16} className="text-gray-400" />
+                            ) : (
+                                <ChevronDown size={16} className="text-gray-400" />
+                            )}
                         </div>
-                        <div className="text-sm text-gray-600">
-                            Weekdays, hours vary
-                        </div>
-                        <div className="text-xs text-gray-500 mt-1">
-                            +1 date-specific time
-                        </div>
+
+                        {showAvailabilityDropdown ? (
+                            <div className="space-y-2">
+                                {availabilityOptions.map((opt, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => {
+                                            setSelectedAvailability(opt);
+                                            setShowAvailabilityDropdown(false);
+                                        }}
+                                        className={`w-full flex items-center justify-between p-3 rounded-lg border transition-all ${selectedAvailability.label === opt.label
+                                                ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                                : 'border-gray-200 hover:border-gray-300 text-gray-600'
+                                            }`}
+                                    >
+                                        <div>
+                                            <div className="text-sm font-medium">{opt.label}</div>
+                                            <div className="text-xs text-gray-500">{opt.extra}</div>
+                                        </div>
+                                        {selectedAvailability.label === opt.label && (
+                                            <Check size={16} className="text-blue-600" />
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+                        ) : (
+                            <>
+                                <div className="text-sm text-gray-600">
+                                    {selectedAvailability.label}
+                                </div>
+                                <div className="text-xs text-gray-500 mt-1">
+                                    {selectedAvailability.extra}
+                                </div>
+                            </>
+                        )}
                     </div>
 
                     {/* Host */}
                     <div className="p-6 border-b border-gray-100">
-                        <div className="flex items-center justify-between mb-4 cursor-pointer group">
+                        <div
+                            className="flex items-center justify-between mb-4 cursor-pointer group"
+                            onClick={() => setShowHostDropdown(!showHostDropdown)}
+                        >
                             <h3 className="font-bold text-gray-900">Host</h3>
-                            <ChevronDown size={16} className="text-gray-400" />
+                            {showHostDropdown ? (
+                                <ChevronUp size={16} className="text-gray-400" />
+                            ) : (
+                                <ChevronDown size={16} className="text-gray-400" />
+                            )}
                         </div>
-                        <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">A</div>
-                            <span className="text-sm text-gray-600">Ankit Kushwaha (you)</span>
-                        </div>
+
+                        {showHostDropdown ? (
+                            <div className="space-y-2">
+                                {hostOptions.map((host, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => {
+                                            setSelectedHost(host);
+                                            setShowHostDropdown(false);
+                                        }}
+                                        className={`w-full flex items-center justify-between p-3 rounded-lg border transition-all ${selectedHost.name === host.name
+                                                ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                                : 'border-gray-200 hover:border-gray-300 text-gray-600'
+                                            }`}
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">
+                                                {host.initial}
+                                            </div>
+                                            <span className="text-sm">{host.name} ({host.email})</span>
+                                        </div>
+                                        {selectedHost.name === host.name && (
+                                            <Check size={16} className="text-blue-600" />
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="flex items-center gap-2">
+                                <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">
+                                    {selectedHost.initial}
+                                </div>
+                                <span className="text-sm text-gray-600">{selectedHost.name} ({selectedHost.email})</span>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -108,7 +278,7 @@ const CreateEventDrawer = ({ isOpen, onClose, onCreate }) => {
                         More options
                     </button>
                     <button
-                        onClick={() => onCreate({ name: title, duration, location })}
+                        onClick={handleCreate}
                         className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-bold text-sm transition-colors"
                     >
                         Create
