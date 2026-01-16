@@ -2,9 +2,9 @@
 
 <div align="center">
 
-[![Demo Video](https://img.shields.io/badge/🎥_Watch-Demo_Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](YOUR_DEMO_VIDEO_LINK_HERE)
-[![Vercel App](https://img.shields.io/badge/🚀_Frontend-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://your-app.vercel.app/)
-[![Render API](https://img.shields.io/badge/⚙️_Backend-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://calendlify.onrender.com)
+[![Demo Video](https://img.shields.io/badge/🎥_Watch-Demo_Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white)]([[YOUR_DEMO_VIDEO_LINK_HERE](https://docs.google.com/videos/d/1vqmOH-kCrOXktdxyIezEyoCrfwD4DhPVEvBMmaLM_gY/edit?usp=sharing)](https://docs.google.com/videos/d/1vqmOH-kCrOXktdxyIezEyoCrfwD4DhPVEvBMmaLM_gY/edit?usp=sharing))
+[![Vercel App](https://img.shields.io/badge/🚀_Frontend-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)]([[https://your-app.vercel.app/](https://calendlify.vercel.app/)](https://calendlify.vercel.app/))
+[![Render API](https://img.shields.io/badge/⚙️_Backend-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)]([https://calendlify.onrender.com](https://calendlify.onrender.com/))
 
 </div>
 
