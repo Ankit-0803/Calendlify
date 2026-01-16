@@ -13,13 +13,18 @@ const meetingRoutes = require('./routes/meetingRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
-const PORT = process.env.PORT || 5020;
+const PORT = process.env.PORT || 5030;
+
+// CORS Configuration
+const corsOptions = {
+    origin: process.env.NODE_ENV === 'production'
+        ? [process.env.FRONTEND_URL, 'https://calendlify.vercel.app'] // Add your Vercel URL
+        : true, // Allow all origins in development
+    credentials: true,
+};
 
 // Middleware
-app.use(cors({
-    origin: true, // Allow all origins for dev simplicity
-    credentials: true,
-}));
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Health check
