@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Copy, MoreVertical, ExternalLink, Link as LinkIcon, Edit2, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const EventTypeCard = ({ eventType, onDelete }) => {
+const EventTypeCard = ({ eventType, onDelete, onEdit }) => {
     const [showMenu, setShowMenu] = useState(false);
     const menuRef = useRef(null);
 
@@ -34,6 +34,11 @@ const EventTypeCard = ({ eventType, onDelete }) => {
         setShowMenu(false);
     };
 
+    const handleEdit = () => {
+        onEdit && onEdit(eventType);
+        setShowMenu(false);
+    };
+
     return (
         <div className="bg-white rounded-md border border-gray-200 shadow-sm hover:shadow-md transition-all relative overflow-visible flex group min-h-[120px]">
             {/* Left Color Strip */}
@@ -48,7 +53,10 @@ const EventTypeCard = ({ eventType, onDelete }) => {
                         <input type="checkbox" className="mt-1.5 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
 
                         <div>
-                            <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors cursor-pointer">
+                            <h3
+                                onClick={handleEdit}
+                                className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors cursor-pointer"
+                            >
                                 {eventType.name}
                             </h3>
                             <div className="flex flex-col gap-1 mt-1">
@@ -79,7 +87,7 @@ const EventTypeCard = ({ eventType, onDelete }) => {
                                 {showMenu && (
                                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-50 py-1 origin-top-right">
                                         <button
-                                            onClick={() => { alert('Edit functionality coming soon'); setShowMenu(false); }}
+                                            onClick={handleEdit}
                                             className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                                         >
                                             <Edit2 size={14} /> Edit

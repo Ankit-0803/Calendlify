@@ -5,6 +5,7 @@ import { eventTypeService } from '../services/api';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import CreateEventPopup from '../components/dashboard/CreateEventPopup';
 import CreateEventDrawer from '../components/dashboard/CreateEventDrawer';
+import EditEventDrawer from '../components/dashboard/EditEventDrawer';
 
 const EventTypesPage = () => {
     const [eventTypes, setEventTypes] = useState([]);
@@ -14,6 +15,10 @@ const EventTypesPage = () => {
     // UI State for Create Flow
     const [showCreatePopup, setShowCreatePopup] = useState(false);
     const [showCreateDrawer, setShowCreateDrawer] = useState(false);
+
+    // UI State for Edit Flow
+    const [showEditDrawer, setShowEditDrawer] = useState(false);
+    const [editingEventType, setEditingEventType] = useState(null);
 
     // Sample data fallback if API fails
     const sampleEventTypes = [
@@ -51,6 +56,30 @@ const EventTypesPage = () => {
         // Here we would call API to create event
     };
 
+    const handleEdit = (eventType) => {
+        setEditingEventType(eventType);
+        setShowEditDrawer(true);
+    };
+
+    const handleEditSave = (updatedEventType) => {
+        // Update the event type in the list
+        setEventTypes(prev => prev.map(et =>
+            et.id === updatedEventType.id ? updatedEventType : et
+        ));
+        setShowEditDrawer(false);
+        setEditingEventType(null);
+    };
+
+    const handleDelete = async (eventId) => {
+        try {
+            await eventTypeService.delete(eventId);
+            setEventTypes(prev => prev.filter(et => et.id !== eventId));
+        } catch (error) {
+            console.error('Failed to delete event type', error);
+            alert('Failed to delete event type. Please try again.');
+        }
+    };
+
     const filteredEventTypes = eventTypes.filter(et =>
         et.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -67,6 +96,16 @@ const EventTypesPage = () => {
                 isOpen={showCreateDrawer}
                 onClose={() => setShowCreateDrawer(false)}
                 onCreate={handleCreateSubmit}
+            />
+
+            <EditEventDrawer
+                isOpen={showEditDrawer}
+                onClose={() => {
+                    setShowEditDrawer(false);
+                    setEditingEventType(null);
+                }}
+                eventType={editingEventType}
+                onSave={handleEditSave}
             />
 
             {/* Main Header */}
@@ -137,10 +176,12 @@ const EventTypesPage = () => {
                 <div className="flex flex-col gap-4">
                     {filteredEventTypes.length > 0 ? (
                         filteredEventTypes.map(type => (
-                            <EventTypeCard key={type.id} eventType={type} onDelete={() => {
-                                // Optimistic update or refetch
-                                setEventTypes(prev => prev.filter(et => et.id !== type.id));
-                            }} />
+                            <EventTypeCard
+                                key={type.id}
+                                eventType={type}
+                                onEdit={handleEdit}
+                                onDelete={handleDelete}
+                            />
                         ))
                     ) : (
                         <div className="col-span-full p-12 text-center bg-white rounded-lg border border-gray-200 border-dashed">
@@ -154,3 +195,4 @@ const EventTypesPage = () => {
 };
 
 export default EventTypesPage;
+
